@@ -23,14 +23,14 @@ jobs:
         run: |
           # Trigger the 1000-plugin workflow first
           echo "Triggering workflow for 1000 plugins"
-          gh workflow run ./scripts/get-all-plugins-workflow-1000.yml --ref refs/heads/master
+          gh workflow run scripts/get-all-plugins-workflow-1000.yml --ref refs/heads/master
           sleep 10
 
           # Trigger the rest of the workflows (multiples of 2000)
           for i in {2000..56000..2000}
           do
             echo "Triggering workflow for $i plugins"
-            gh workflow run ./scripts/get-all-plugins-workflow-$i.yml --ref refs/heads/master
+            gh workflow run scripts/get-all-plugins-workflow-$i.yml --ref refs/heads/master
             sleep 10
           done
         env:
