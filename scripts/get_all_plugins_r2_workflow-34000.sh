@@ -1702,7 +1702,7 @@ fetch_and_save_checksums() {
 
     local user_agent=$(get_random_user_agent)
 
-    debug_log "Sending request to Worker for checksums: ${CF_WORKER_URL}?plugin=${plugin}&version=${version}&type=checksums${force_update_param}${cache_only_param}"
+    debug_log "Sending request to Worker for checksums: CF_WORKER_URL?plugin=${plugin}&version=${version}&type=checksums${force_update_param}${cache_only_param}"
 
     if [ "$CACHE_ONLY" == 'y' ]; then
         curl -s -H "User-Agent: $user_agent" -o /dev/null "${CF_WORKER_URL}?plugin=${plugin}&version=${version}&type=checksums${force_update_param}${cache_only_param}"
