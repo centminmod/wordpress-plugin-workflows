@@ -1746,6 +1746,7 @@ USER_AGENTS=(
     ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/534.36"]=12
 )
 
+CLOSED_PLUGINS_FILE="${WORDPRESS_WORKDIR}/closed_plugins.txt"
 LAST_VERSION_FILE="${WORDPRESS_WORKDIR}/last_versions.txt"
 PARALLEL_JOBS=1
 
