@@ -2021,6 +2021,7 @@ USER_AGENTS=(
     ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/534.36"]=12
 )
 
+OPENED_PLUGINS_FILE="${WORDPRESS_WORKDIR}/opened_plugins.txt"
 CLOSED_PLUGINS_FILE="${WORDPRESS_WORKDIR}/closed_plugins.txt"
 LAST_VERSION_FILE="${WORDPRESS_WORKDIR}/last_versions.txt"
 PARALLEL_JOBS=1
@@ -2036,6 +2037,8 @@ FORCE_UPDATE='n'
 CACHE_ONLY='n'
 
 mkdir -p "$WORDPRESS_WORKDIR" "$MIRROR_DIR" "$LOGS_DIR"
+rm -f "$OPENED_PLUGINS_FILE"
+touch "$OPENED_PLUGINS_FILE"
 DEBUG_MODE=0
 
 while getopts "p:dalD:t:fc" opt; do
@@ -2353,6 +2356,10 @@ process_plugin() {
         debug_log "Successfully fetched and saved checksums for $plugin."
     else
         debug_log "Failed to fetch and save checksums for $plugin."
+    fi
+
+    if [ $version_check_status -eq 0 ]; then
+        echo "$plugin" >> "$OPENED_PLUGINS_FILE"
     fi
 }
 
