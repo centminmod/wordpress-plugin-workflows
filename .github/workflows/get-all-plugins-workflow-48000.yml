@@ -1,0 +1,81 @@
+name: All Mirror WordPress Plugins 48000
+
+on:
+  workflow_dispatch:      # Allows manual triggering of the workflow
+
+jobs:
+  mirror_plugins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          pip install requests
+
+      - name: Run query_plugins.py Script
+        run: |
+          python3 .github/scripts/query_plugins.py -pages 1 -perpage 1 > plugin_results.json
+
+      - name: Upload Plugin Results as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-results
+          path: plugin_results.json
+
+      - name: Set Execute Permission
+        run: chmod +x .github/scripts/get_all_plugins_r2_workflow-48000.sh
+
+      - name: Test List Plugins Flag (-l)
+        env:
+          CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+        run: |
+          ./.github/scripts/get_all_plugins_r2_workflow-48000.sh -l
+
+      - name: Upload Plugin List
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-list
+          path: wordpress-plugins/wp-plugin-svn-list.txt
+
+      - name: Run .github/scripts/get_all_plugins_r2_workflow-48000.sh and Log Output
+        env:
+          CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+        run: |
+          time ./.github/scripts/get_all_plugins_r2_workflow-48000.sh -p 4 -d -D y -t 1 -c 2>&1 | tee script_output-48000.log
+
+      - name: Check Locally Downloaded WP Plugins
+        run: |
+          ls -lAhrt mirror || true
+
+      - name: Upload Script Output Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: script_output-48000-log
+          path: script_output-48000.log
+
+      - name: Prepare Plugin Logs for Upload
+        run: |
+          find plugin-logs -type f | while read file; do
+            newname=$(echo "$file" | sed -e 's/[:"<>|*?]/_/g' -e 's/\$/_/g' -e 's/\r/_/g' -e 's/\n/_/g')
+            if [ "$file" != "$newname" ]; then
+              mv "$file" "$newname"
+              echo "Renamed $file to $newname"
+            fi
+          done
+
+      - name: Upload Plugin Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-logs
+          path: plugin-logs/
