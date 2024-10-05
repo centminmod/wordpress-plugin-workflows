@@ -22,7 +22,7 @@ jobs:
 
       - name: Run query_plugins.py Script
         run: |
-          python3 .github/scripts/query_plugins.py -pages 1 -perpage 1 > plugin_results.json
+          python3 ./scripts/query_plugins.py -pages 1 -perpage 1 > plugin_results.json
 
       - name: Upload Plugin Results as Artifact
         uses: actions/upload-artifact@v4
@@ -31,13 +31,13 @@ jobs:
           path: plugin_results.json
 
       - name: Set Execute Permission
-        run: chmod +x .github/scripts/get_all_plugins_r2_workflow-26000.sh
+        run: chmod +x ./scripts/get_all_plugins_r2_workflow-26000.sh
 
       - name: Test List Plugins Flag (-l)
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          ./.github/scripts/get_all_plugins_r2_workflow-26000.sh -l
+          ././scripts/get_all_plugins_r2_workflow-26000.sh -l
 
       - name: Upload Plugin List
         if: always()
@@ -46,11 +46,11 @@ jobs:
           name: plugin-list
           path: wordpress-plugins/wp-plugin-svn-list.txt
 
-      - name: Run .github/scripts/get_all_plugins_r2_workflow-26000.sh and Log Output
+      - name: Run ./scripts/get_all_plugins_r2_workflow-26000.sh and Log Output
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          time ./.github/scripts/get_all_plugins_r2_workflow-26000.sh -p 4 -d -D y -t 1 -c 2>&1 | tee script_output-26000.log
+          time ././scripts/get_all_plugins_r2_workflow-26000.sh -p 4 -d -D y -t 1 -c 2>&1 | tee script_output-26000.log
 
       - name: Check Locally Downloaded WP Plugins
         run: |
