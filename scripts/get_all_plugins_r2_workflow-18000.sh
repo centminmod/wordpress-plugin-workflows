@@ -2016,6 +2016,7 @@ fetch_and_save_checksums() {
 
 process_plugin() {
     local plugin=$1
+    plugin=$(echo "$plugin" | sed 's/^\/\|\/$//g')
 
     # Check if the plugin is already known to be closed
     if grep -q "^$plugin$" "$CLOSED_PLUGINS_FILE" 2>/dev/null; then
