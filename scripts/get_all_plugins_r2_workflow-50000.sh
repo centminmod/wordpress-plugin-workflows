@@ -1741,8 +1741,47 @@ touch "$LAST_VERSION_FILE"
 
 if [ "$PARALLEL_JOBS" -gt 1 ]; then
     echo "Running in parallel with $PARALLEL_JOBS jobs..."
+    echo "Variables before export:"
+
+    # WordPress-related directories
+    echo "WORDPRESS_WORKDIR: $WORDPRESS_WORKDIR"
+    echo "PLUGIN_DIR: $PLUGIN_DIR"
+    echo "MIRROR_DIR: $MIRROR_DIR"
+    echo "LOGS_DIR: $LOGS_DIR"
+
+    # Cloudflare Worker related URLs
+    echo "CF_WORKER_URL: $CF_WORKER_URL"
+
+    # Flags and options
+    echo "DOWNLOAD_LINK_API: $DOWNLOAD_LINK_API"
+    echo "DOWNLOAD_ALL_PLUGINS: $DOWNLOAD_ALL_PLUGINS"
+    echo "LIST_ONLY: $LIST_ONLY"
+    echo "DELAY_DOWNLOADS: $DELAY_DOWNLOADS"
+    echo "DELAY_DURATION: $DELAY_DURATION"
+    echo "FORCE_UPDATE: $FORCE_UPDATE"
+    echo "CACHE_ONLY: $CACHE_ONLY"
+
+    # File paths
+    echo "OPENED_PLUGINS_FILE: $OPENED_PLUGINS_FILE"
+    echo "CLOSED_PLUGINS_FILE: $CLOSED_PLUGINS_FILE"
+    echo "LAST_VERSION_FILE: $LAST_VERSION_FILE"
+    echo "ALL_PLUGINS_FILE: $ALL_PLUGINS_FILE"
+
+    # Parallel job configuration
+    echo "PARALLEL_JOBS: $PARALLEL_JOBS"
+
+    # User Agents mapping
+    echo "USER_AGENTS: ${USER_AGENTS[@]}"
+
+    # Additional plugins to be processed
+    # echo "ADDITIONAL_PLUGINS: ${ADDITIONAL_PLUGINS[@]}"
+
+    # Plugin List (loaded from directory or ALL_PLUGINS_FILE)
+    #echo "PLUGIN_LIST: ${PLUGIN_LIST[@]}"
+    #echo "COMBINED_PLUGINS: ${COMBINED_PLUGINS[@]}"
+
     # First, export all variables including USER_AGENTS
-    export DOWNLOAD_BASE_URL MIRROR_DIR LAST_VERSION_FILE DEBUG_MODE DOWNLOAD_LINK_API LOGS_DIR ALL_PLUGINS_FILE DOWNLOAD_ALL_PLUGINS LIST_ONLY CF_WORKER_URL DELAY_DOWNLOADS DELAY_DURATION FORCE_UPDATE CACHE_ONLY USER_AGENTS
+    export DOWNLOAD_BASE_URL MIRROR_DIR LAST_VERSION_FILE DEBUG_MODE DOWNLOAD_LINK_API LOGS_DIR ALL_PLUGINS_FILE DOWNLOAD_ALL_PLUGINS LIST_ONLY CF_WORKER_URL DELAY_DOWNLOADS DELAY_DURATION FORCE_UPDATE CACHE_ONLY WORDPRESS_WORKDIR PLUGIN_DIR PARALLEL_JOBS OPENED_PLUGINS_FILE CLOSED_PLUGINS_FILE USER_AGENTS
 
     # Then, export the functions
     export -f process_plugin get_latest_version_and_download_link download_plugin debug_log populate_all_plugins save_plugin_info get_random_user_agent fetch_and_save_checksums
