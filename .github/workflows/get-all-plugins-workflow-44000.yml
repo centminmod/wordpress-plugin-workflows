@@ -37,7 +37,7 @@ jobs:
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          ././scripts/get_all_plugins_r2_workflow-44000.sh -l
+          ./scripts/get_all_plugins_r2_workflow-44000.sh -l
 
       - name: Upload Plugin List
         if: always()
@@ -50,7 +50,7 @@ jobs:
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          time ././scripts/get_all_plugins_r2_workflow-44000.sh -p 4 -d -D y -t 1 -c 2>&1 | tee script_output-44000.log
+          time ./scripts/get_all_plugins_r2_workflow-44000.sh -p 4 -d -D y -t 1 -c 2>&1 | tee script_output-44000.log
 
       - name: Check Locally Downloaded WP Plugins
         run: |
