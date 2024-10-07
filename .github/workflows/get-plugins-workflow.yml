@@ -79,3 +79,25 @@ jobs:
         with:
           name: plugin-logs
           path: plugin-logs/
+
+      - name: Purge Cloudflare cache for WP INFO API hostname
+        env:
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+          CLOUDFLARE_HOSTNAME_INFO: ${{ secrets.CLOUDFLARE_HOSTNAME_INFO }}
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ env.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+          -H "Authorization: Bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"hosts":["${{ env.CLOUDFLARE_HOSTNAME_INFO }}"]}'
+
+      - name: Purge Cloudflare cache for WP ZIP API hostname
+        env:
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+          CLOUDFLARE_HOSTNAME_ZIP: ${{ secrets.CLOUDFLARE_HOSTNAME_ZIP }}
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ env.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+          -H "Authorization: Bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"hosts":["${{ env.CLOUDFLARE_HOSTNAME_ZIP }}"]}'
