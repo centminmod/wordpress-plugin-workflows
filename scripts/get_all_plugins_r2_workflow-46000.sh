@@ -1388,6 +1388,8 @@ PARALLEL_JOBS=1
 DOWNLOAD_ALL_PLUGINS='n'
 LIST_ONLY='n'
 ALL_PLUGINS_FILE="${WORDPRESS_WORKDIR}/wp-plugin-svn-list.txt"
+START_COUNT=0
+END_COUNT=0
 
 DELAY_DOWNLOADS='n'
 DELAY_DURATION=5
@@ -1400,7 +1402,7 @@ rm -f "$OPENED_PLUGINS_FILE"
 touch "$OPENED_PLUGINS_FILE"
 DEBUG_MODE=0
 
-while getopts "p:dalD:t:fc" opt; do
+while getopts "p:dalD:t:fcs:e:" opt; do
     case ${opt} in
         p ) PARALLEL_JOBS=$OPTARG ;;
         d ) DEBUG_MODE=1 ;;
@@ -1409,8 +1411,10 @@ while getopts "p:dalD:t:fc" opt; do
         D ) DELAY_DOWNLOADS=$OPTARG ;;
         t ) DELAY_DURATION=$OPTARG ;;
         f ) FORCE_UPDATE='y' ;;
-        c ) CACHE_ONLY='y' ;;    # New option for cache-only
-        \? ) echo "Usage: $0 [-p PARALLEL_JOBS] [-d] [-a] [-l] [-D DELAY_DOWNLOADS] [-t DELAY_DURATION] [-f] [-c]" 1>&2; exit 1 ;;
+        c ) CACHE_ONLY='y' ;;
+        s ) START_COUNT=$OPTARG ;;
+        e ) END_COUNT=$OPTARG ;;
+        \? ) echo "Usage: $0 [-p PARALLEL_JOBS] [-d] [-a] [-l] [-D DELAY_DOWNLOADS] [-t DELAY_DURATION] [-f] [-c] [-s START_COUNT] [-e END_COUNT]" 1>&2; exit 1 ;;
     esac
 done
 
@@ -1733,9 +1737,16 @@ populate_all_plugins() {
     
     if [ "$LIST_ONLY" == 'n' ]; then
         ALL_PLUGINS=()
-        while IFS= read -r line; do
-            ALL_PLUGINS+=("$line")
-        done < "$ALL_PLUGINS_FILE"
+        if [ "$DOWNLOAD_ALL_PLUGINS" == 'y' ] && [ $START_COUNT -gt 0 ] && [ $END_COUNT -ge $START_COUNT ]; then
+            echo "Processing plugins from line $START_COUNT to $END_COUNT"
+            while IFS= read -r line; do
+                ALL_PLUGINS+=("$line")
+            done < <(sed -n "${START_COUNT},${END_COUNT}p" "$ALL_PLUGINS_FILE")
+        else
+            while IFS= read -r line; do
+                ALL_PLUGINS+=("$line")
+            done < "$ALL_PLUGINS_FILE"
+        fi
         echo "Loaded ${#ALL_PLUGINS[@]} plugins."
     fi
 }
@@ -1826,16 +1837,22 @@ else
     done
 fi
 
-if [ -f "$CLOSED_PLUGINS_FILE" ]; then
-    echo
-    echo "Closed Plugin List:"
-    cat "$CLOSED_PLUGINS_FILE" | sort | uniq || true
-    echo
-    echo "Total closed plugins: $(wc -l < "$CLOSED_PLUGINS_FILE")"
-    echo
-else
-    echo
-    echo "No closed plugins found."
-    echo
+if [ "$DOWNLOAD_ALL_PLUGINS" == 'y' ]; then
+    if [ -f "$CLOSED_PLUGINS_FILE" ]; then
+        echo
+        echo "Closed Plugin List: $CLOSED_PLUGINS_FILE"
+        echo "Total closed plugins: $(wc -l < "$CLOSED_PLUGINS_FILE")"
+    else
+        echo
+        echo "No closed plugins found."
+    fi
+    if [ -f "$OPENED_PLUGINS_FILE" ]; then
+        echo
+        echo "Opened Plugin List: $OPENED_PLUGINS_FILE"
+        echo "Total opened plugins: $(wc -l < "$OPENED_PLUGINS_FILE")"
+    else
+        echo
+        echo "No open plugins found."
+    fi
 fi
 echo "Plugin download process completed."
