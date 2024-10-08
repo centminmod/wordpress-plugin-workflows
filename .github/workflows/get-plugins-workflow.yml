@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check Disk Space Before
+        run: |
+          df -hT || true
+
       - name: Remove unused components
         uses: ngocptblaplafla/more-space-plz@v1
         with:
@@ -69,7 +73,7 @@ jobs:
           vcpkg: true
           yq: true
 
-      - name: Check Disk Space
+      - name: Check Disk Space After
         run: |
           df -hT || true
 
@@ -152,7 +156,7 @@ jobs:
           CLOUDFLARE_HOSTNAME_INFO: ${{ secrets.CLOUDFLARE_HOSTNAME_INFO }}
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ env.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-          -H "Authorization: Bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
+          -H "X-Auth-Key: Bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
           -H "Content-Type: application/json" \
           --data '{"hosts":["${{ env.CLOUDFLARE_HOSTNAME_INFO }}"]}'
 
@@ -163,6 +167,6 @@ jobs:
           CLOUDFLARE_HOSTNAME_ZIP: ${{ secrets.CLOUDFLARE_HOSTNAME_ZIP }}
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ env.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-          -H "Authorization: Bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
+          -H "X-Auth-Key: Bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
           -H "Content-Type: application/json" \
           --data '{"hosts":["${{ env.CLOUDFLARE_HOSTNAME_ZIP }}"]}'
