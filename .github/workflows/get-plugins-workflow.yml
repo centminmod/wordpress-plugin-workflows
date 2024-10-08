@@ -123,19 +123,19 @@ jobs:
 
       - name: Check Locally Downloaded WP Plugins
         run: |
-          ls -lAhrt mirror || true
+          ls -lAhrt /scripts/mirror || true
 
       - name: Check Locally Downloaded WP Plugins Disk Space Used
         run: |
-          du -sh mirror || true
+          du -sh /scripts/mirror || true
 
       - name: Check WP Plugins Mirror Logs
         run: |
-          ls -lAhrt plugin-logs || true
+          ls -lAhrt /scripts/plugin-logs || true
 
       - name: Check WP WorkDir
         run: |
-          ls -lAhrt wordpress-plugins || true
+          ls -lAhrt /scripts/wordpress-plugins || true
 
       - name: Upload Script Output Log
         if: always()
