@@ -8,8 +8,71 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Remove unused components
+        uses: ngocptblaplafla/more-space-plz@v1
+        with:
+          aliyun: true
+          android-sdk: true
+          apache: true
+          aws-tools: true
+          azcopy: true
+          azure-cli: true
+          azure-devops-cli: true
+          bazel: true
+          bicep: true
+          clang: true
+          cmake: true
+          codeql-bundle: true
+          container-tools: true
+          docker: true
+          docker-data: true
+          dotnet: true
+          firefox: true
+          gcc-compilers: true
+          gfortran: true
+          github-cli: true
+          google-chrome: true
+          google-cloud-cli: true
+          golang: true
+          haskell: true
+          heroku: true
+          homebrew: true
+          java-tools: true
+          julia: true
+          kotlin: true
+          kubernetes-tools: true
+          leiningen: true
+          man: true
+          microsoft-edge: true
+          miniconda: true
+          mono: true
+          mssql-tools: true
+          mysql: true
+          nginx: true
+          nodejs: true
+          nvm: true
+          oc-cli: true
+          oras-cli: true
+          packer: true
+          php: true
+          postgresql: true
+          powershell: true
+          pulumi: true
+          rlang: true
+          ruby: true
+          rust: true
+          sbt: true
+          selenium: true
+          snap: true
+          sqlpackage: true
+          swift: true
+          terraform: true
+          vcpkg: true
+          yq: true
+
+      - name: Check Disk Space
+        run: |
+          df -hT || true
 
       - name: Set Up Python
         uses: actions/setup-python@v4
