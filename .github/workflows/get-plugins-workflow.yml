@@ -119,11 +119,23 @@ jobs:
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          time ./scripts/get_plugins_r2_workflow.sh -p 1 -d -D y -t 0.5 -c -f 2>&1 | tee script_output.log
+          time ./scripts/get_plugins_r2_workflow.sh -p 1 -d -D y -t 0.5 -f 2>&1 | tee script_output.log
 
       - name: Check Locally Downloaded WP Plugins
         run: |
           ls -lAhrt mirror || true
+
+      - name: Check Locally Downloaded WP Plugins Disk Space Used
+        run: |
+          du -sh mirror || true
+
+      - name: Check WP Plugins Mirror Logs
+        run: |
+          ls -lAhrt plugin-logs || true
+
+      - name: Check WP WorkDir
+        run: |
+          ls -lAhrt wordpress-plugins || true
 
       - name: Upload Script Output Log
         if: always()
