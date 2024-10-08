@@ -156,7 +156,7 @@ jobs:
           CLOUDFLARE_HOSTNAME_INFO: ${{ secrets.CLOUDFLARE_HOSTNAME_INFO }}
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ env.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-          -H "X-Auth-Key: ${{ env.CLOUDFLARE_API_TOKEN }}" \
+          -H "Authorization: bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
           -H "Content-Type: application/json" \
           --data '{"hosts":["${{ env.CLOUDFLARE_HOSTNAME_INFO }}"]}'
 
@@ -167,6 +167,6 @@ jobs:
           CLOUDFLARE_HOSTNAME_ZIP: ${{ secrets.CLOUDFLARE_HOSTNAME_ZIP }}
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ env.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-          -H "X-Auth-Key: ${{ env.CLOUDFLARE_API_TOKEN }}" \
+          -H "Authorization: bearer ${{ env.CLOUDFLARE_API_TOKEN }}" \
           -H "Content-Type: application/json" \
           --data '{"hosts":["${{ env.CLOUDFLARE_HOSTNAME_ZIP }}"]}'
