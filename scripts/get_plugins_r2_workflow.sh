@@ -532,6 +532,13 @@ if [ "$PARALLEL_JOBS" -gt 1 ]; then
     export -f process_plugin get_latest_version_and_download_link download_plugin debug_log populate_all_plugins save_plugin_info get_random_user_agent fetch_and_save_checksums
     printf "%s\n" "${COMBINED_PLUGINS[@]}" | xargs -P $PARALLEL_JOBS -I {} bash -c 'process_plugin "$@"' _ {}
 else
+    # WordPress-related directories
+    echo "WORDPRESS_WORKDIR: $WORDPRESS_WORKDIR"
+    echo "PLUGIN_DIR: $PLUGIN_DIR"
+    echo "MIRROR_DIR: $MIRROR_DIR"
+    echo "LOGS_DIR: $LOGS_DIR"
+    echo "Current DIR: $(pwd)"
+    echo
     for plugin in "${COMBINED_PLUGINS[@]}"; do
         process_plugin "$plugin"
     done
