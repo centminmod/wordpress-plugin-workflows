@@ -146,7 +146,7 @@ jobs:
 
       - name: Prepare Plugin Logs for Upload
         run: |
-          find plugin-logs -type f | while read file; do
+          find /scripts/plugin-logs -type f | while read file; do
             newname=$(echo "$file" | sed -e 's/[:"<>|*?]/_/g' -e 's/\$/_/g' -e 's/\r/_/g' -e 's/\n/_/g')
             if [ "$file" != "$newname" ]; then
               mv "$file" "$newname"
@@ -159,7 +159,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: plugin-logs
-          path: plugin-logs/
+          path: /scripts/plugin-logs/
 
       - name: Purge Cloudflare cache for WP INFO API hostname
         env:
