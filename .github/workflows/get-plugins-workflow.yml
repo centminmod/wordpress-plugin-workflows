@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: plugin-list
-          path: wordpress-plugins/wp-plugin-svn-list.txt
+          path: /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/wordpress-plugins/wp-plugin-svn-list.txt
 
       - name: Run ./scripts/get_plugins_r2_workflow.sh and Log Output
         env:
