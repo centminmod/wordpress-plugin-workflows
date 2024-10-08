@@ -30,7 +30,6 @@ jobs:
           firefox: true
           gcc-compilers: true
           gfortran: true
-          github-cli: true
           google-chrome: true
           google-cloud-cli: true
           golang: true
