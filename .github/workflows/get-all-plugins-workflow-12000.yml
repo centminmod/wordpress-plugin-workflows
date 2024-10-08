@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: plugin-list
-          path: wordpress-plugins/wp-plugin-svn-list.txt
+          path: /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/wordpress-plugins/wp-plugin-svn-list.txt
 
       - name: Run ./scripts/get_all_plugins_r2_workflow-12000.sh and Log Output
         env:
@@ -123,7 +123,19 @@ jobs:
 
       - name: Check Locally Downloaded WP Plugins
         run: |
-          ls -lAhrt mirror || true
+          ls -lAhrt /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/mirror || true
+
+      - name: Check Locally Downloaded WP Plugins Disk Space Used
+        run: |
+          du -sh /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/mirror || true
+
+      - name: Check WP Plugins Mirror Logs
+        run: |
+          ls -lAhrt /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/plugin-logs || true
+
+      - name: Check WP WorkDir
+        run: |
+          ls -lAhrt /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/wordpress-plugins || true
 
       - name: Upload Script Output Log
         if: always()
@@ -134,7 +146,7 @@ jobs:
 
       - name: Prepare Plugin Logs for Upload
         run: |
-          find plugin-logs -type f | while read file; do
+          find /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/plugin-logs -type f | while read file; do
             newname=$(echo "$file" | sed -e 's/[:"<>|*?]/_/g' -e 's/\$/_/g' -e 's/\r/_/g' -e 's/\n/_/g')
             if [ "$file" != "$newname" ]; then
               mv "$file" "$newname"
@@ -147,4 +159,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: plugin-logs
-          path: plugin-logs/
+          path: /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/plugin-logs/
