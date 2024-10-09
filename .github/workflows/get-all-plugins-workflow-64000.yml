@@ -1,4 +1,4 @@
-name: All Mirror WordPress Plugins 2000
+name: All Mirror WordPress Plugins 64000
 
 on:
   workflow_dispatch:      # Allows manual triggering of the workflow
@@ -100,13 +100,13 @@ jobs:
           path: plugin_results.json
 
       - name: Set Execute Permission
-        run: chmod +x ./scripts/get_all_plugins_r2_workflow-2000.sh
+        run: chmod +x ./scripts/get_all_plugins_r2_workflow-64000.sh
 
       - name: Test List Plugins Flag (-l)
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          ./scripts/get_all_plugins_r2_workflow-2000.sh -l
+          ./scripts/get_all_plugins_r2_workflow-64000.sh -l
 
       - name: Upload Plugin List
         if: always()
@@ -115,11 +115,11 @@ jobs:
           name: plugin-list
           path: /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/wordpress-plugins/wp-plugin-svn-list.txt
 
-      - name: Run ./scripts/get_all_plugins_r2_workflow-2000.sh and Log Output
+      - name: Run ./scripts/get_all_plugins_r2_workflow-64000.sh and Log Output
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          time ./scripts/get_all_plugins_r2_workflow-2000.sh -p 4 -d -D y -t 0.5 -a -c -f -s 12001 -e 16000 2>&1 | tee script_output-2000.log
+          time ./scripts/get_all_plugins_r2_workflow-64000.sh -p 4 -d -D y -t 0.5 -a -c -f -s 128001 -e 132000 2>&1 | tee script_output-64000.log
 
       - name: Check Locally Downloaded WP Plugins
         run: |
@@ -141,8 +141,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: script_output-2000-log
-          path: script_output-2000.log
+          name: script_output-64000-log
+          path: script_output-64000.log
 
       - name: Prepare Plugin Logs for Upload
         run: |

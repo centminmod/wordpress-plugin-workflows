@@ -119,7 +119,7 @@ jobs:
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
         run: |
-          time ./scripts/get_all_plugins_r2_workflow-38000.sh -p 4 -d -D y -t 1 -c 2>&1 | tee script_output-38000.log
+          time ./scripts/get_all_plugins_r2_workflow-38000.sh -p 4 -d -D y -t 0.5 -a -c -f -s 76001 -e 80000 2>&1 | tee script_output-38000.log
 
       - name: Check Locally Downloaded WP Plugins
         run: |

@@ -27,7 +27,7 @@ jobs:
           sleep 10
 
           # Trigger the rest of the workflows (multiples of 2000)
-          for i in {2000..56000..2000}
+          for i in {2000..50000..2000}
           do
             echo "Triggering workflow for $i plugins"
             gh workflow run get-all-plugins-workflow-$i.yml --ref refs/heads/master
