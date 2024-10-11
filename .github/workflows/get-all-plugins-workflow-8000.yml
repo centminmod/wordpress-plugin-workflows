@@ -105,6 +105,7 @@ jobs:
       - name: Test List Plugins Flag (-l)
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+          CF_SQL_WORKER_URL: ${{ secrets.CF_SQL_WORKER_URL }}
         run: |
           ./scripts/get_all_plugins_r2_workflow-2000.sh -l
 
@@ -118,8 +119,9 @@ jobs:
       - name: Run ./scripts/get_all_plugins_r2_workflow-2000.sh and Log Output
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+          CF_SQL_WORKER_URL: ${{ secrets.CF_SQL_WORKER_URL }}
         run: |
-          time ./scripts/get_all_plugins_r2_workflow-2000.sh -p 4 -d -D y -t 0.5 -a -c -f -s 16001 -e 20000 2>&1 | tee script_output-2000.log
+          time ./scripts/get_all_plugins_r2_workflow-2000.sh -p 4 -d -D y -t 0.5 -a -c -f -i -w "${CF_SQL_WORKER_URL}" -s 16001 -e 20000 2>&1 | tee script_output-2000.log
 
       - name: Check Locally Downloaded WP Plugins
         run: |

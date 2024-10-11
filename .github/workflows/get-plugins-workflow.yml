@@ -105,6 +105,7 @@ jobs:
       - name: Test List Plugins Flag (-l)
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+          CF_SQL_WORKER_URL: ${{ secrets.CF_SQL_WORKER_URL }}
         run: |
           ./scripts/get_plugins_r2_workflow.sh -l
 
@@ -118,6 +119,7 @@ jobs:
       - name: Run ./scripts/get_plugins_r2_workflow.sh and Log Output
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
+          CF_SQL_WORKER_URL: ${{ secrets.CF_SQL_WORKER_URL }}
         run: |
           time ./scripts/get_plugins_r2_workflow.sh -p 1 -d -D y -t 0.5 -f 2>&1 | tee script_output.log
 

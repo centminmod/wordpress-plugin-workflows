@@ -56,13 +56,15 @@ DELAY_DURATION=5
 
 FORCE_UPDATE='n'
 CACHE_ONLY='n'
+IMPORT_TO_D1=0
+D1_WORKER_URL=""
 
 mkdir -p "$WORDPRESS_WORKDIR" "$MIRROR_DIR" "$LOGS_DIR"
 rm -f "$OPENED_PLUGINS_FILE"
 touch "$OPENED_PLUGINS_FILE"
 DEBUG_MODE=0
 
-while getopts "p:dalD:t:fcs:e:" opt; do
+while getopts "p:dalD:t:fcs:e:iw:" opt; do
     case ${opt} in
         p ) PARALLEL_JOBS=$OPTARG ;;
         d ) DEBUG_MODE=1 ;;
@@ -74,7 +76,9 @@ while getopts "p:dalD:t:fcs:e:" opt; do
         c ) CACHE_ONLY='y' ;;
         s ) START_COUNT=$OPTARG ;;
         e ) END_COUNT=$OPTARG ;;
-        \? ) echo "Usage: $0 [-p PARALLEL_JOBS] [-d] [-a] [-l] [-D DELAY_DOWNLOADS] [-t DELAY_DURATION] [-f] [-c] [-s START_COUNT] [-e END_COUNT]" 1>&2; exit 1 ;;
+        i ) IMPORT_TO_D1=1 ;;
+        w ) D1_WORKER_URL=$OPTARG ;;
+        \? ) echo "Usage: $0 [-p PARALLEL_JOBS] [-d] [-a] [-l] [-D DELAY_DOWNLOADS] [-t DELAY_DURATION] [-f] [-c] [-s START_COUNT] [-e END_COUNT] [-i] [-w D1_WORKER_URL]" 1>&2; exit 1 ;;
     esac
 done
 
@@ -312,6 +316,29 @@ fetch_and_save_checksums() {
     fi
 }
 
+import_to_d1() {
+    local plugin=$1
+    local version=$2
+    
+    debug_log "Importing $plugin version $version to D1 database"
+    
+    if [ -z "$D1_WORKER_URL" ]; then
+        debug_log "D1 Worker URL is not set. Skipping import."
+        return 1
+    fi
+    
+    local response=$(./scan_plugins_update_d1.sh -u "$D1_WORKER_URL" -m single -p "$plugin" -d)
+    local status=$?
+    
+    if [ $status -eq 0 ]; then
+        debug_log "D1 import response: $response"
+        return 0
+    else
+        debug_log "Failed to import $plugin to D1. Error: $response"
+        return 1
+    fi
+}
+
 process_plugin() {
     local plugin=$1
     plugin=$(echo "$plugin" | sed 's/^\/\|\/$//g')
@@ -384,6 +411,14 @@ process_plugin() {
 
     if [ $version_check_status -eq 0 ]; then
         echo "$plugin" >> "$OPENED_PLUGINS_FILE"
+    fi
+
+    if [ $IMPORT_TO_D1 -eq 1 ]; then
+        if import_to_d1 "$plugin" "$LATEST_VERSION"; then
+            debug_log "Successfully imported $plugin to D1 database."
+        else
+            debug_log "Failed to import $plugin to D1 database."
+        fi
     fi
 }
 
@@ -477,6 +512,8 @@ if [ "$PARALLEL_JOBS" -gt 1 ]; then
 
     # User Agents mapping
     echo "USER_AGENTS: ${USER_AGENTS[@]}"
+    echo "IMPORT_TO_D1: $IMPORT_TO_D1"
+    echo "D1_WORKER_URL: $D1_WORKER_URL"
 
     # Additional plugins to be processed
     # echo "ADDITIONAL_PLUGINS: ${ADDITIONAL_PLUGINS[@]}"
@@ -486,10 +523,10 @@ if [ "$PARALLEL_JOBS" -gt 1 ]; then
     #echo "COMBINED_PLUGINS: ${COMBINED_PLUGINS[@]}"
 
     # First, export all variables including USER_AGENTS
-    export DOWNLOAD_BASE_URL MIRROR_DIR LAST_VERSION_FILE DEBUG_MODE DOWNLOAD_LINK_API LOGS_DIR ALL_PLUGINS_FILE DOWNLOAD_ALL_PLUGINS LIST_ONLY CF_WORKER_URL DELAY_DOWNLOADS DELAY_DURATION FORCE_UPDATE CACHE_ONLY WORDPRESS_WORKDIR PLUGIN_DIR PARALLEL_JOBS OPENED_PLUGINS_FILE CLOSED_PLUGINS_FILE USER_AGENTS
+    export DOWNLOAD_BASE_URL MIRROR_DIR LAST_VERSION_FILE DEBUG_MODE DOWNLOAD_LINK_API LOGS_DIR ALL_PLUGINS_FILE DOWNLOAD_ALL_PLUGINS LIST_ONLY CF_WORKER_URL DELAY_DOWNLOADS DELAY_DURATION FORCE_UPDATE CACHE_ONLY WORDPRESS_WORKDIR PLUGIN_DIR PARALLEL_JOBS OPENED_PLUGINS_FILE CLOSED_PLUGINS_FILE USER_AGENTS IMPORT_TO_D1 D1_WORKER_URL
 
     # Then, export the functions
-    export -f process_plugin get_latest_version_and_download_link download_plugin debug_log populate_all_plugins save_plugin_info get_random_user_agent fetch_and_save_checksums
+    export -f process_plugin get_latest_version_and_download_link download_plugin debug_log populate_all_plugins save_plugin_info get_random_user_agent fetch_and_save_checksums import_to_d1
     printf "%s\n" "${COMBINED_PLUGINS[@]}" | xargs -P $PARALLEL_JOBS -I {} bash -c 'process_plugin "$@"' _ {}
 else
     for plugin in "${COMBINED_PLUGINS[@]}"; do
