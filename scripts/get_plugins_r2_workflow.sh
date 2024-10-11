@@ -367,7 +367,7 @@ import_to_d1() {
         return 1
     fi
     
-    local response=$(./scan_plugins_update_d1.sh -u "$D1_WORKER_URL" -m single -p "$plugin" -d)
+    local response=$(./scripts/scan_plugins_update_d1.sh -u "$D1_WORKER_URL" -m single -p "$plugin" -d)
     local status=$?
     
     if [ $status -eq 0 ]; then
