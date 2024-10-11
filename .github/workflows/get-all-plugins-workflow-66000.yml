@@ -116,8 +116,7 @@ jobs:
           name: plugin-list
           path: /home/runner/work/wordpress-plugin-workflows/wordpress-plugin-workflows/scripts/wordpress-plugins/wp-plugin-svn-list.txt
 
-      - name: Run ./scripts/get_all_plugins_r2_workflow-66000
-    .sh and Log Output
+      - name: Run ./scripts/get_all_plugins_r2_workflow-66000.sh and Log Output
         env:
           CF_WORKER_URL: ${{ secrets.CF_WORKER_URL }}
           CF_SQL_WORKER_URL: ${{ secrets.CF_SQL_WORKER_URL }}
